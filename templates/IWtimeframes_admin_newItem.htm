@@ -1,0 +1,35 @@
+<script language="javascript">
+    function send(valor){
+        var error=false;
+        if(document.new_marc.nom_marc.value==""){
+            alert("{{gt text="You have not provided the name of the timeFrame."}}");
+            var error=true;
+        }
+        if(!error){document.new_marc.submit();}
+    }
+</script>
+
+{include file="IWtimeframes_admin_menu.htm"}
+<div class="z-admincontainer">
+    <div class="z-adminpageicon">{img modname='core' src='db_add.gif' set='icons/large'}</div>
+    <div style="height:10px;">&nbsp;</div>
+    <h2>{$accio}</h2>
+    <form  id="new_marc" name="new_marc" class="z-form" method="post" enctype="application/x-www-form-urlencoded" action="{modurl modname="IWtimeframes" type="admin" func="create"}" >
+        <input type="hidden" name="authid" value="{insert name="generateauthkey" module="IWtimeframes"}" />
+        <input type="hidden" name="mdid" value="{$mdid}" />
+        <input type="hidden" name="m" value="{$m}" />
+
+        <table width="600" border="0" style="text-align:left;">
+            <tr>
+                <td>{gt text="Name of the timeFrame"}</td>
+                <td><input type="text" name="nom_marc" size="32" maxlength="55" value="{$nom_marc}"></td>
+            </tr>
+            <tr>
+                <td>{gt text="Description"}</td>
+                <td><input type="text" name="descriu" size="50" maxlength="200" value="{$descriu}"></td>
+            </tr>
+        </table>
+        <input type="button" onClick="javascript:send(0)" value="{$acciosubmit}">
+    </form>
+</div>
+<a href={modurl modname="IWtimeframes" type="admin" func="module"}>{gt text="About this module"}</a>
