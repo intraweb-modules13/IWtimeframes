@@ -282,6 +282,10 @@ class IWtimeframes_Controller_Admin extends Zikula_Controller {
         $nova_hora = false;
         $editmode = false;
         $descriu = '';
+        $starth = '';
+        $startm = '';
+        $endh = '';
+        $endm = '';
         switch ($mode) {
             case 'n': //new
                 $accio = $this->__('New time');
@@ -297,10 +301,10 @@ class IWtimeframes_Controller_Admin extends Zikula_Controller {
                 if ($period == false) {
                     return LogUtil::registerError($this->__('Can not find the timeFrame over which do the action.'));
                 }
-                $view->assign('starth', date('H', strtotime($period['start'])));
-                $view->assign('startm', date('i', strtotime($period['start'])));
-                $view->assign('endh', date('H', strtotime($period['end'])));
-                $view->assign('endm', date('i', strtotime($period['end'])));
+                $starth = date('H', strtotime($period['start']));
+                $startm = date('i', strtotime($period['start']));
+                $endh = date('H', strtotime($period['end']));
+                $endm = date('i', strtotime($period['end']));
                 $descriu = $period['descriu'];
                 $view->assign('hid', $hid);
                 break;
@@ -311,6 +315,12 @@ class IWtimeframes_Controller_Admin extends Zikula_Controller {
         !empty($horari) ? $hi_ha_hores = true : $hi_ha_hores = false;
         $item = ModUtil::apiFunc('IWtimeframes', 'user', 'get',
                                   array('mdid' => $mdid));
+
+
+        $view->assign('starth', $starth);
+        $view->assign('startm', $startm);
+        $view->assign('endh', $endh);
+        $view->assign('endm', $endm);
         $view->assign('descriu', $descriu);
         $view->assign('accio', $accio);
         $view->assign('acciosubmit', $acciosubmit);
@@ -405,15 +415,15 @@ class IWtimeframes_Controller_Admin extends Zikula_Controller {
             return LogUtil::registerError($this->__('Not authorized to manage timeFrames.'), 403);
         }
 
+        $hid = FormUtil::getPassedValue('hid', isset($args['hid']) ? $args['hid'] : null, 'GET');
+        $mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'GET');
+        $confirmacio = FormUtil::getPassedValue('c', isset($args['c']) ? $args['c'] : null, 'GET');
+
         // Mirar si existeixen reserves que facin referï¿œncia a aquest marc horari
         if (ModUtil::apiFunc('IWtimeframes', 'admin', 'hasbookings',
                               array('mdid' => $mdid))) {
             return LogUtil::registerError($this->__('Operation unavailable. There are reservations on this time frame.'));
         }
-
-        $hid = FormUtil::getPassedValue('hid', isset($args['hid']) ? $args['hid'] : null, 'GET');
-        $mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'GET');
-        $confirmacio = FormUtil::getPassedValue('c', isset($args['c']) ? $args['c'] : null, 'GET');
 
         //Cridem la funció de l'API de l'usuari que ens retornarï¿œ la informació del registre demanat
 
@@ -422,11 +432,6 @@ class IWtimeframes_Controller_Admin extends Zikula_Controller {
 
         if ($theHour == false) {
             return LogUtil::registerError($this->__('Can not find the timeFrame over which do the action.'));
-        }
-
-        //Comprovaciï¿œ de seguretat
-        if (!SecurityUtil::checkPermission('IWtimeframes::Item', "$registre[nom_marc]::$mdid", ACCESS_DELETE)) {
-            return LogUtil::registerError($this->__('Not authorized to manage timeFrames.'));
         }
 
         //Demanem confirmació per l'esborrament del registre, si no s'ha demanat abans
