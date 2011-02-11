@@ -96,18 +96,18 @@ class IWtimeframes_Api_Admin extends Zikula_Api {
         }
 
         switch ($mode) {
-            case 'all': //timetable not referenced in iw_bookings
+            case 'all': //timetable not referenced in IWbookings
                 // falta esborrar totes les reserves
                 $where = "mdid = " . $mdid;
                 $rs = array();
-                $rs = DBUtil::selectObjectArray('iw_bookings_spaces', $where);
+                $rs = DBUtil::selectObjectArray('IWbookings_spaces', $where);
                 foreach ($rs as $item) {
-                    DBUtil::deleteWhere('iw_bookings', "sid=" . $item['sid']);
+                    DBUtil::deleteWhere('IWbookings', "sid=" . $item['sid']);
                 }
             case 'keep': //keep bookings
                 $obj = array('mdid' => 0);
                 $where = "mdid = " . $mdid;
-                DBUtil::updateObject($obj, 'iw_bookings_spaces', $where);
+                DBUtil::updateObject($obj, 'IWbookings_spaces', $where);
             case 'noref': //delete all: timetable & bookings
                 DBUtil::deleteWhere('IWtimeframes_definition', "mdid=" . $mdid);
                 DBUtil::deleteWhere('IWtimeframes', "mdid=" . $mdid);
@@ -123,12 +123,12 @@ class IWtimeframes_Api_Admin extends Zikula_Api {
             return LogUtil::registerError($this->__('Not authorized to manage timeFrames.'), 403);
         }
 
-        $modid = ModUtil::getIdFromName('iw_bookings');
+        $modid = ModUtil::getIdFromName('IWbookings');
         $modinfo = ModUtil::getInfo($modid);
 
         if ($modinfo['state'] > 1) {
             $mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'POST');
-            $tablename = 'iw_bookings_spaces';
+            $tablename = 'IWbookings_spaces';
             $where = 'mdid = ' . $mdid;
             return (DBUtil::selectObjectCount($tablename, $where) > 0);
         } else {
@@ -147,16 +147,16 @@ class IWtimeframes_Api_Admin extends Zikula_Api {
             return LogUtil::registerError($this->__('Not authorized to manage timeFrames.'), 403);
         }
 
-        $modid = ModUtil::getIdFromName('iw_bookings');
+        $modid = ModUtil::getIdFromName('IWbookings');
         $modinfo = ModUtil::getInfo($modid);
 
-        // chek if iw_bookings module is installed -> state 2 or 3
+        // chek if IWbookings module is installed -> state 2 or 3
         if ($modinfo['state'] > 1) {
             $pntables = DBUtil::getTables();
-            $t1 = $pntables['iw_bookings'];
-            $t2 = $pntables['iw_bookings_spaces'];
-            $c1 = $pntables['iw_bookings_column'];
-            $c2 = $pntables['iw_bookings_spaces_column'];
+            $t1 = $pntables['IWbookings'];
+            $t2 = $pntables['IWbookings_spaces'];
+            $c1 = $pntables['IWbookings_column'];
+            $c2 = $pntables['IWbookings_spaces_column'];
 
             $sql = "SELECT COUNT(*) "
                     . " FROM $t1 INNER JOIN $t2 ON $t1.$c1[sid] = $t2.$c2[sid] "

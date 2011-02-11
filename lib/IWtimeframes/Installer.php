@@ -1,7 +1,7 @@
 <?php
 class IWtimeframes_Installer extends Zikula_Installer {
     /**
-     * Initialise the iw_TimeFrames module creating module tables and module vars
+     * Initialise the IWTimeFrames module creating module tables and module vars
      * @author Albert Pérez Monfort (aperezm@xtec.cat)
      * @author Josep Ferràndiz Farré (jferran6@xtec.cat)
      * @return bool true if successful, false otherwise
@@ -18,7 +18,7 @@ class IWtimeframes_Installer extends Zikula_Installer {
     }
 
     /**
-     * Delete the iw_TimeFrames module & update existing bookings references
+     * Delete the IWTimeFrames module & update existing bookings references
      * @author Albert Pérez Monfort (aperezm@xtec.cat)
      * @author Josep Ferràndiz Farré (jferran6@xtec.cat)
      * @return bool true if successful, false otherwise
@@ -28,7 +28,7 @@ class IWtimeframes_Installer extends Zikula_Installer {
         DBUtil::dropTable('IWtimeframes');
         DBUtil::dropTable('IWtimeframes_definition');
 
-        // Totes les referències als marcs s'han d'esborrar a iw_bookings_spaces
+        // Totes les referències als marcs s'han d'esborrar a IWbookings_spaces
         // 1r. mirar si existeix el mòdul i després actualitzar els registres
 
         $modid = ModUtil::getIdFromName('IWbookings');
