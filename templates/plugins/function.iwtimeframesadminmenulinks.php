@@ -12,7 +12,7 @@ function smarty_function_iwtimeframesadminmenulinks($params, &$smarty) {
         $params['seperator'] = '|';
     }
     if (!isset($params['class'])) {
-        $params['class'] = 'pn-menuitem-title';
+        $params['class'] = 'z-menuitem-title';
     }
 
     $timeframesadminmenulinks = "<span class=\"" . $params['class'] . "\">" . $params['start'] . " ";
