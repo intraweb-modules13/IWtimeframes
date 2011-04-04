@@ -1,5 +1,5 @@
 <?php
-class IWtimeframes_Api_User extends Zikula_Api {
+class IWtimeframes_Api_User extends Zikula_AbstractApi {
     public function getall($args) {
         //Comprovaciï¿œ de seguretat. Si falla retorna una matriu buida
         $registres = array();

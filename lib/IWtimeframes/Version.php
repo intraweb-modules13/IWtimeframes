@@ -8,7 +8,7 @@
  * @author		Josep Ferràndiz FarrÃ© (jferran6@xtec.cat)
  * @return		The version information
  */
-class IWtimeframes_Version extends Zikula_Version
+class IWtimeframes_Version extends Zikula_AbstractVersion
 {
     public function getMetaData() {
         $meta = array();

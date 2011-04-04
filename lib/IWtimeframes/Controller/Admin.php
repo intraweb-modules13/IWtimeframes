@@ -1,6 +1,6 @@
 <?php
 
-class IWtimeframes_Controller_Admin extends Zikula_Controller {
+class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
     public function main() {
         // Security check
         if (!SecurityUtil::checkPermission('IWtimeframes::', "::", ACCESS_ADMIN)) {

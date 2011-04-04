@@ -1,5 +1,5 @@
 <?php
-class IWtimeframes_Api_Admin extends Zikula_Api {
+class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
     public function create($args) {
         $nom_marc = FormUtil::getPassedValue('nom_marc', isset($args['nom_marc']) ? $args['nom_marc'] : null, 'GET');
         $descriu = FormUtil::getPassedValue('descriu', isset($args['descriu']) ? $args['descriu'] : null, 'GET');
