@@ -1,85 +1,89 @@
 {include file="IWtimeframes_admin_menu.htm"}
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='clock.gif' set='icons/large'}</div>
-    <div style="height:10px;">&nbsp;</div>
+    <div class="z-adminpageicon">{img modname='core' src='clock.png' set='icons/large'}</div>
     <h2>{gt text="Edition of timeFrame"}: {$nom_marc}</h2>
     {if isset($nova_hora) || isset($editmode)}
     {if isset($nova_hora)}
-    <form  method='post' name='new_hour' id='nhr' action='{modurl modname="IWtimeframes" type="admin" func="create_hour"}'
-           enctype='application/x-www-form-urlencoded'>
+    <form  class="z-form" method='post' name='new_hour' id='nhr' action="{modurl modname='IWtimeframes' type='admin' func='create_hour'}" enctype='application/x-www-form-urlencoded'>
         {else}
-        <form  method='post' name='new_hour' id='nhr' action='{modurl modname="IWtimeframes" type="admin" func="update_hour"}' enctype='application/x-www-form-urlencoded'>
-            <input type="hidden" name='hid'value="{$hid} ">
+        <form  class="z-form" method='post' name='new_hour' id='nhr' action="{modurl modname='IWtimeframes' type='admin' func='update_hour'}" enctype='application/x-www-form-urlencoded'>
+            <input type="hidden" name='hid'value="{$hid}" />
             {/if}
-            <input type="hidden" name="authid" value="{insert name="generateauthkey" module="IWtimeframes"}" />
-            <input type="hidden" name='mdid'value="{$mdid} ">
-
-            <h3 align='center'>{$accio}</h3>
-            <table width='600' border='0'>
-                <tr>
-                    <td  width='150'>
-                        {gt text = "Start time (hh:mm)"}</td><td>
-                        <select name="hora_i">
-                            {foreach item=hora from=$hores}
-                            {if $starth eq $hora.id}
-                            {assign var=selected value="selected"}
-                            {else}
-                            {assign var=selected value=""}
-                            {/if}
-                            <option  {$selected} value="{$hora.id}">{$hora.name}</option>
-                            {/foreach}
-                        </select>:<select name="minut_i">
-                            {foreach item=minut from=$minuts}
-                            {if $startm eq $minut.id}
-                            {assign var=selected value="selected"}
-                            {else}
-                            {assign var=selected value=""}
-                            {/if}
-                            <option {$selected} value="{$minut.id}">{$minut.name}</option>
-                            {/foreach}
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        {gt text="Finish time (hh:mm)"}</td><td>
-                        <select name="hora_f">
-                            {foreach item=hora from=$hores}
-                            {if $endh eq $hora.id}
-                            {assign var=selected value="selected"}
-                            {else}
-                            {assign var=selected value=""}
-                            {/if}
-                            <option {$selected} value="{$hora.id}">{$hora.name}</option>
-                            {/foreach}
-                        </select>:<select name="minut_f">
-                            {foreach item=minut from=$minuts}
-                            {if $endm eq $minut.id}
-                            {assign var=selected value="selected"}
-                            {else}
-                            {assign var=selected value=""}
-                            {/if}
-                            <option {$selected} value="{$minut.id}">{$minut.name}</option>
-                            {/foreach}
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>{gt text="Description"}</td><td>
-                        <input name= "descriu"  size='50' value='{$descriu}'>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="submit" name="submit" value="{$acciosubmit}">
-                    </td>
-                </tr>
-            </table>
+            <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
+            <input type="hidden" name='mdid'value="{$mdid}" />
+            <h3 align='center'>
+                {$accio}
+            </h3>
+            <div class="z-formrow">
+                <label for="hora_i">Start time (hh:mm)</label>
+                <div class="z-formnote">
+                    <select name="hora_i">
+                        {foreach item=hora from=$hores}
+                        {if $starth eq $hora.id}
+                        {assign var=selected value="selected"}
+                        {else}
+                        {assign var=selected value=""}
+                        {/if}
+                        <option  {$selected} value="{$hora.id}">{$hora.name}</option>
+                        {/foreach}
+                    </select>
+                    :
+                    <select name="minut_i">
+                        {foreach item=minut from=$minuts}
+                        {if $startm eq $minut.id}
+                        {assign var=selected value="selected"}
+                        {else}
+                        {assign var=selected value=""}
+                        {/if}
+                        <option {$selected} value="{$minut.id}">{$minut.name}</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="z-formrow">
+                <label for="hora_f">Finish time (hh:mm)</label>
+                <div class="z-formnote">
+                    <select name="hora_f">
+                        {foreach item=hora from=$hores}
+                        {if $endh eq $hora.id}
+                        {assign var=selected value="selected"}
+                        {else}
+                        {assign var=selected value=""}
+                        {/if}
+                        <option {$selected} value="{$hora.id}">{$hora.name}</option>
+                        {/foreach}
+                    </select>
+                    :
+                    <select name="minut_f">
+                        {foreach item=minut from=$minuts}
+                        {if $endm eq $minut.id}
+                        {assign var=selected value="selected"}
+                        {else}
+                        {assign var=selected value=""}
+                        {/if}
+                        <option {$selected} value="{$minut.id}">{$minut.name}</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="z-formrow">
+                <label for="descriu">{gt text="Description"}</label>
+                <input name= "descriu"  size='50' value='{$descriu}' />
+            </div>
+            <div class="z-center">
+                <div class="z-buttons">
+                    <a href="javascript:document.forms['nhr'].submit();">
+                        {img modname='core' src='button_ok.png' set='icons/small'} {$acciosubmit}
+                    </a>
+                </div>
+            </div>
         </form>
+        <div style="height: 20px;"></div>
         {/if}
         {if ((not (isset($nova_hora) || isset($editmode))) && (isset($hasbookings) && !$hasbookings))}
-        <a href={modurl modname="IWtimeframes" type = "admin" func="new_hour" mdid = $mdid m=n}>{img modname='core' src='db_add.gif' set='icons/extrasmall'   __alt="Add new time" __title="Add new time"}  {gt text="Add new time"}</a>
-        <br><div style="height:15px;">&nbsp;</div>
+        <a href="{modurl modname='IWtimeframes' type = 'admin' func='new_hour' mdid =$mdid m=n}">
+            {img modname='core' src='db_add.png' set='icons/extrasmall' __alt="Add new time" __title="Add new time"}  {gt text="Add new time"}
+        </a>
         {/if}
         {if isset($hi_ha_hores)}
         <table width ="100%" bodre="0">
@@ -87,20 +91,38 @@
                     <table width="700" border="0">
                         <thead>
                             <tr>
-                                <th align="center" bgcolor="silver">{gt text="Time"}</th>
-                                <th align="center" bgcolor="silver">{gt text="Description"}</th>
-                                <th align="center" bgcolor="silver">{gt text="Accions"}</th>
+                                <th align="center" bgcolor="silver">
+                                    {gt text="Time"}
+                                </th>
+                                <th align="center" bgcolor="silver">
+                                    {gt text="Description"}
+                                </th>
+                                <th align="center" bgcolor="silver">
+                                    {gt text="Accions"}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {section name=hores loop=$horari}
                             <tr bgcolor='#ededed'>
-                                <td align="center" width="25%">{$horari[hores].hora}</td>
-                                <td align="center" >{if $horari[hores].descriu}{$horari[hores].descriu}{else}---{/if}</td>
+                                <td align="center" width="25%">
+                                    {$horari[hores].hora}
+                                </td>
+                                <td align="center" >
+                                    {if $horari[hores].descriu}
+                                    {$horari[hores].descriu}
+                                    {else}
+                                    ---
+                                    {/if}
+                                </td>
                                 <td align="center">
                                     {if !isset($hasbookings) || !$hasbookings}
-                                    <a href={modurl modname="IWtimeframes" type="admin" func="edit_hour" hid= $horari[hores].hid mdid = $mdid}>{img modname='core' src='edit.gif' set='icons/extrasmall'   __alt="Edit" __title="Edit"}</a>
-                                    <a href={modurl modname="IWtimeframes" type="admin" func="delete_hour" hid=$horari[hores].hid mdid = $mdid}>{img modname='core' src='14_layer_deletelayer.gif' set='icons/extrasmall'   __alt="Delete" __title="Delete"}</a>
+                                    <a href="{modurl modname='IWtimeframes' type='admin' func='edit_hour' hid=$horari[hores].hid mdid = $mdid}">
+                                        {img modname='core' src='edit.png' set='icons/extrasmall'   __alt="Edit" __title="Edit"}
+                                    </a>
+                                    <a href="{modurl modname='IWtimeframes' type='admin' func='delete_hour' hid=$horari[hores].hid mdid = $mdid}">
+                                        {img modname='core' src='14_layer_deletelayer.png' set='icons/extrasmall' __alt="Delete" __title="Delete"}
+                                    </a>
                                     {else}
                                     {gt text="Have bookings"}
                                     {/if}
@@ -114,6 +136,4 @@
         {else}
         {gt text="This timeFrame does not have any set hours"}
         {/if}
-        <br>
-        </div>
-        <a href={modurl modname="IWtimeframes" type="admin" func="module"}>{gt text="About this module"}</a>
+</div>

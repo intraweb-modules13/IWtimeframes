@@ -1,5 +1,16 @@
 <?php
+
 class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
+
+    public function getlinks($args) {
+        $links = array();
+        if (SecurityUtil::checkPermission('IWtimeframes::', "::", ACCESS_ADMIN)) {
+            $links[] = array('url' => ModUtil::url('IWtimeframes', 'admin', 'newItem', array('m' => 'n')), 'text' => $this->__('Add new timeFrame'), 'id' => 'iwtimeframes_newItem', 'class' => 'z-icon-es-new');
+            $links[] = array('url' => ModUtil::url('IWtimeframes', 'admin', 'main'), 'text' => $this->__('Show the timeFrames'), 'id' => 'iwtimeframes_main', 'class' => 'z-icon-es-view');
+        }
+        return $links;
+    }
+
     public function create($args) {
         $nom_marc = FormUtil::getPassedValue('nom_marc', isset($args['nom_marc']) ? $args['nom_marc'] : null, 'GET');
         $descriu = FormUtil::getPassedValue('descriu', isset($args['descriu']) ? $args['descriu'] : null, 'GET');
@@ -19,7 +30,7 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
             return LogUtil::registerError($this->__('Not authorized to manage timeFrames.'), 403);
         }
         $item = array('nom_marc' => $nom_marc,
-                      'descriu' => $descriu);
+            'descriu' => $descriu);
 
         if (!DBUtil::insertObject($item, 'IWtimeframes_definition', 'mdid')) {
             return LogUtil::registerError($this->__('Error! Creation attempt failed.') . " nom_marc: " . $nom_marc);
@@ -59,7 +70,7 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
 
         $where = "mdid=" . $mdid;
         $item = array('nom_marc' => $nom_marc,
-                      'descriu' => $descriu);
+            'descriu' => $descriu);
 
         if (!DBUtil::updateObject($item, 'IWtimeframes_definition', $where)) {
             return LogUtil::registerError($this->__('The modify of the frame time failed.') . "-" . $item['nom_marc']);
@@ -192,11 +203,14 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
         foreach ($items as $item) {
             if ($item['hid'] <> $hid) {
                 // coincideixen inici o final
-                if (($startf == $item['start']) or ($endf == $item['end'])) return true;
+                if (($startf == $item['start']) or ($endf == $item['end']))
+                    return true;
                 // Coincideix en part o totalment amb una altra existent
-                if ((($startf > $item['start']) and ($startf < $item['end'])) or (($endf > $item['start']) and ($endf < $item['end']))) return true;
+                if ((($startf > $item['start']) and ($startf < $item['end'])) or (($endf > $item['start']) and ($endf < $item['end'])))
+                    return true;
                 // La nova hora engloba alguna altra existent
-                if (($startf <= $item['start']) and ($endf >= $item['end'])) return true;
+                if (($startf <= $item['start']) and ($endf >= $item['end']))
+                    return true;
             }
         }
         return false;
@@ -220,9 +234,9 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
             return LogUtil::registerError($this->__('Error! Could not do what you wanted. Please check your input.'));
         } else {
             $item = array('mdid' => DataUtil::formatForStore($mdid),
-                          'start' => DataUtil::formatForStore($start),
-                          'end' => DataUtil::formatForStore($end),
-                          'descriu' => DataUtil::formatForStore($descriu));
+                'start' => DataUtil::formatForStore($start),
+                'end' => DataUtil::formatForStore($end),
+                'descriu' => DataUtil::formatForStore($descriu));
             $tablename = "IWtimeframes";
             $idcolumn = 'hid';
             DBUtil::insertObject($item, $tablename, $idcolumn);
@@ -295,4 +309,5 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
 
         return true;
     }
+
 }

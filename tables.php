@@ -38,7 +38,6 @@ function IWtimeframes_tables() {
     ObjectUtil::addStandardFieldsToTableDefinition($table['IWtimeframes_column'], 'pn_');
     ObjectUtil::addStandardFieldsToTableDataDefinition($table['IWtimeframes_column_def'], 'iw_');
 
-/*
     // IWmain table definition needed in this module
     $table['IWmain'] = DBUtil::getLimitedTablename('IWmain');
     $table['IWmain_column'] = array('id' => 'iw_id',
@@ -48,8 +47,8 @@ function IWtimeframes_tables() {
         'value' => 'iw_value',
         'lifetime' => 'iw_lifetime');
 
-    $table['iw_bookings'] = DBUtil::getLimitedTablename('iw_bookings');
-    $table['iw_bookings_column'] = array('bid' => 'bid',
+    $table['IWbookings'] = DBUtil::getLimitedTablename('IWbookings');
+    $table['IWbookings_column'] = array('bid' => 'bid',
         'user' => 'user',
         'sid' => 'sid',
         'start' => 'start',
@@ -62,14 +61,14 @@ function IWtimeframes_tables() {
         'bkey' => 'bkey');
 
     // iw_bookings_spaces table definition
-    $table['iw_bookings_spaces'] = DBUtil::getLimitedTablename('iw_bookings_spaces');
-    $table['iw_bookings_spaces_column'] = array('sid' => 'sid',
+    $table['IWbookings_spaces'] = DBUtil::getLimitedTablename('IWbookings_spaces');
+    $table['IWbookings_spaces_column'] = array('sid' => 'sid',
         'space_name' => 'space_name',
         'description' => 'description',
         'mdid' => 'mdid',
         'vertical' => 'vertical',
         'color' => 'color',
         'active' => 'active');
-*/
+
     return $table;
 }

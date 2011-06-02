@@ -11,25 +11,27 @@
 
 {include file="IWtimeframes_admin_menu.htm"}
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='db_add.gif' set='icons/large'}</div>
+    <div class="z-adminpageicon">{img modname='core' src='db_add.png' set='icons/large'}</div>
     <div style="height:10px;">&nbsp;</div>
     <h2>{$accio}</h2>
     <form  id="new_marc" name="new_marc" class="z-form" method="post" enctype="application/x-www-form-urlencoded" action="{modurl modname="IWtimeframes" type="admin" func="create"}" >
-        <input type="hidden" name="authid" value="{insert name="generateauthkey" module="IWtimeframes"}" />
+        <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
         <input type="hidden" name="mdid" value="{$mdid}" />
         <input type="hidden" name="m" value="{$m}" />
-
-        <table width="600" border="0" style="text-align:left;">
-            <tr>
-                <td>{gt text="Name of the timeFrame"}</td>
-                <td><input type="text" name="nom_marc" size="32" maxlength="55" value="{$nom_marc}"></td>
-            </tr>
-            <tr>
-                <td>{gt text="Description"}</td>
-                <td><input type="text" name="descriu" size="50" maxlength="200" value="{$descriu}"></td>
-            </tr>
-        </table>
-        <input type="button" onClick="javascript:send(0)" value="{$acciosubmit}">
+        <div class="z-formrow">
+            <label for="nom_marc">{gt text="Name of the timeFrame"}</label>
+            <input type="text" id="nom_marc" name="nom_marc" size="32" maxlength="55" value="{$nom_marc}" />
+        </div>
+        <div class="z-formrow">
+            <label for="descriu">{gt text="Description"}</label>
+            <input type="text" id="descriu" name="descriu" size="32" maxlength="200" value="{$descriu}" />
+        </div>
+        <div class="z-center">
+            <div class="z-buttons">
+                <a href="javascript:send(0);">
+                    {img modname='core' src='button_ok.png' set='icons/small' __alt="Create" __title="Create"} {$acciosubmit}
+                </a>
+            </div>
+        </div>
     </form>
 </div>
-<a href={modurl modname="IWtimeframes" type="admin" func="module"}>{gt text="About this module"}</a>
