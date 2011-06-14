@@ -164,18 +164,10 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
         // chek if IWbookings module is installed -> state 2 or 3
         if ($modinfo['state'] > 1) {
             $pntables = DBUtil::getTables();
-            $t1 = $pntables['IWbookings'];
-            $t2 = $pntables['IWbookings_spaces'];
             $c1 = $pntables['IWbookings_column'];
-            $c2 = $pntables['IWbookings_spaces_column'];
-
-            $sql = "SELECT COUNT(*) "
-                    . " FROM $t1 INNER JOIN $t2 ON $t1.$c1[sid] = $t2.$c2[sid] "
-                    . " WHERE $t2.$c2[mdid]= " . $mdid;
-
-            $result = explode(")", DBUtil::executeSQL($sql));
-
-            return $result[1] > 0;
+            $where = "$c1[sid]= " . $mdid;
+            $result = DBUtil::selectObjectCount('IWbookings', $where);
+            return $result;
         } else {
             return false;
         }
