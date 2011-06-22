@@ -3,7 +3,7 @@
     <div class="z-adminpageicon">{img modname='core' src='clock.png' set='icons/large'}</div>
     <h2>{gt text="Edition of timeFrame"}: {$nom_marc}</h2>
     {if isset($nova_hora) || isset($editmode)}
-    {if isset($nova_hora)}
+    {if isset($nova_hora)&&$nova_hora}
     <form  class="z-form" method='post' name='new_hour' id='nhr' action="{modurl modname='IWtimeframes' type='admin' func='create_hour'}" enctype='application/x-www-form-urlencoded'>
         {else}
         <form  class="z-form" method='post' name='new_hour' id='nhr' action="{modurl modname='IWtimeframes' type='admin' func='update_hour'}" enctype='application/x-www-form-urlencoded'>
@@ -85,7 +85,7 @@
             {img modname='core' src='db_add.png' set='icons/extrasmall' __alt="Add new time" __title="Add new time"}  {gt text="Add new time"}
         </a>
         {/if}
-        {if isset($hi_ha_hores)}
+        {if isset($hi_ha_hores)&& $hi_ha_hores}
         <table width ="100%" bodre="0">
             <tr> <td align="center">
                     <table width="700" border="0">

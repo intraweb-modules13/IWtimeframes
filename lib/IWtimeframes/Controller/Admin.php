@@ -340,10 +340,15 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
         $minut_f = FormUtil::getPassedValue('minut_f', isset($args['minut_f']) ? $args['minut_f'] : null, 'POST');
         $descriu = FormUtil::getPassedValue('descriu', isset($args['descriu']) ? $args['descriu'] : null, 'POST');
 
+        $year = '0000';
+        $month =  '00';
+        $day =  '00'; 
 
+        $date_i = DateUtil::buildDatetime($year, $month, $day, $hora_i, $minut_i);
+        $date_f = DateUtil::buildDatetime($year, $month, $day, $hora_f, $minut_f);
         // Confirm authorisation code
         $this->checkCsrfToken();
-
+//$dt = DateUtil::getDatetime_Date(DateUtil::getDatetime()); print_r($date_i);die();
         //Construim la franja horï¿œria i comprovem que l'hora inicial sigui mï¿œs petita que la hora final
         $hora_inicial = $hora_i . ':' . $minut_i;
         $hora_final = $hora_f . ':' . $minut_f;
@@ -358,17 +363,17 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
         // Check for overlaping time periods
         $overlap = ModUtil::apiFunc('IWtimeframes', 'admin', 'overlap',
                         array('mdid' => $mdid,
-                            'start' => $hora_inicial,
-                            'end' => $hora_final));
+                            'start' => $date_i,
+                            'end' => $date_f));
         if ($overlap) {
             LogUtil::registerError($this->__('Warning! The new time is overlaps with some of the existing ones.'));
         }
-
+        else 
         //Insert new time into DB
         $lid = ModUtil::apiFunc('IWtimeframes', 'admin', 'create_hour',
                         array('mdid' => $mdid,
-                            'start' => $hora_inicial,
-                            'end' => $hora_final,
+                            'start' => $date_i,
+                            'end' => $date_f,
                             'descriu' => $descriu));
 
         if ($lid != false) {
@@ -476,6 +481,11 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
       hora per un marc horari s'ajusten al que ha de ser i envia l'ordre d'actualitzar el registre
      */
 
+    /*
+      funció que comprova que les dades enviades des del formulari de modificaciï¿œ d'una
+      hora per un marc horari s'ajusten al que ha de ser i envia l'ordre d'actualitzar el registre
+     */
+
     public function update_hour($args) {
         // Security check
         if (!SecurityUtil::checkPermission('IWtimeframes::', "::", ACCESS_EDIT)) {
@@ -492,6 +502,12 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
         // Confirm authorisation code
         $this->checkCsrfToken();
 
+        $year = '0000'; //DateUtil::getDatetime_Field($now, 1);
+        $month =  '00'; //DateUtil::getDatetime_Field($now, 2);
+        $day =  '00'; //DateUtil::getDatetime_Field($now, 3);
+
+        $date_i = DateUtil::buildDatetime($year, $month, $day, $hora_i, $minut_i);
+        $date_f = DateUtil::buildDatetime($year, $month, $day, $hora_f, $minut_f);
         //Construim la franja horï¿œria i comprovem que l'hora inicial sigui mï¿œs petita que la hora final
         $start = $hora_i . ':' . $minut_i;
         $end = $hora_f . ':' . $minut_f;
@@ -505,8 +521,8 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
         // Check for overlaping time periods
         $overlap = ModUtil::apiFunc('IWtimeframes', 'admin', 'overlap',
                         array('mdid' => $mdid,
-                            'start' => $start,
-                            'end' => $end,
+                            'start' => $date_i,
+                            'end' => $date_f,
                             'hid' => $hid));
         if ($overlap) {
             LogUtil::registerError($this->__('Warning! The new time is overlaps with some of the existing ones.'));
@@ -515,8 +531,8 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
         //Insert new time into DB
         $lid = ModUtil::apiFunc('IWtimeframes', 'admin', 'update_hour',
                         array('mdid' => $mdid,
-                            'start' => $start,
-                            'end' => $end,
+                            'start' => $date_i,
+                            'end' => $date_f,
                             'descriu' => $descriu,
                             'hid' => $hid));
 

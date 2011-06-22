@@ -164,10 +164,18 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
         // chek if IWbookings module is installed -> state 2 or 3
         if ($modinfo['state'] > 1) {
             $pntables = DBUtil::getTables();
+            $t1 = $pntables['IWbookings'];
+            $t2 = $pntables['IWbookings_spaces'];
             $c1 = $pntables['IWbookings_column'];
-            $where = "$c1[sid]= " . $mdid;
-            $result = DBUtil::selectObjectCount('IWbookings', $where);
-            return $result;
+            $c2 = $pntables['IWbookings_spaces_column'];
+
+            $sql = "SELECT * "
+                    . " FROM $t1 INNER JOIN $t2 ON $t1.$c1[sid] = $t2.$c2[sid] "
+                    . " WHERE $t2.$c2[mdid]= " . $mdid;
+            //$where = ""
+            $result = DBUtil::executeSQL($sql);
+            for ($nitems = -1; !$result->EOF; $result->MoveNext()) $nitems ++;            
+            return ($nitems);
         } else {
             return false;
         }
@@ -191,17 +199,19 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
         $where = "mdid =" . $mdid;
         $orderby = 'hid';
         $items = DBUtil::selectObjectArray($tablename, $where, $orderby);
-
+//print_r($items); die();
         foreach ($items as $item) {
             if ($item['hid'] <> $hid) {
+                $itemStart = date('H:i:s', strtotime($item['start']));
+                $itemEnd   = date('H:i:s', strtotime($item['end']));
                 // coincideixen inici o final
-                if (($startf == $item['start']) or ($endf == $item['end']))
+                if (($startf == $itemStart) or ($endf == $itemEnd))
                     return true;
                 // Coincideix en part o totalment amb una altra existent
-                if ((($startf > $item['start']) and ($startf < $item['end'])) or (($endf > $item['start']) and ($endf < $item['end'])))
+                if ((($startf > $itemStart) and ($startf < $itemEnd)) or (($endf > $itemStart) and ($endf < $itemEnd)))
                     return true;
                 // La nova hora engloba alguna altra existent
-                if (($startf <= $item['start']) and ($endf >= $item['end']))
+                if (($startf <= $itemStart) and ($endf >= $itemEnd))
                     return true;
             }
         }
@@ -209,7 +219,7 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
     }
 
     /*
-      Funciï¿œ que crea una nova hora per un marc horari
+      Funció que crea una nova hora per un marc horari
      */
 
     public function create_hour($args) {
