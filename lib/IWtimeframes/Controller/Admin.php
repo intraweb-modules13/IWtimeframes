@@ -12,13 +12,23 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
             throw new Zikula_Exception_Forbidden();
         }
 
+        $auxframes = array();
         $frames = array();
         //Cridem la funció API anomenada getall i que retornarï¿œ la informació
-        $frames = ModUtil::apiFunc('IWtimeframes', 'user', 'getall');
-
+        $auxframes = ModUtil::apiFunc('IWtimeframes', 'user', 'getall');
+   
+        foreach ($auxframes as $frame) {
+            if (ModUtil::apiFunc('IWtimeframes', 'admin', 'hasbookings', array('mdid' => $frame['mdid']))) {
+                $frame['can_delete'] = true; //false;
+            } else {
+                $frame['can_delete'] = true;
+            }
+            $frames[]=$frame;
+        }    
+        
         //Per si no hi ha marcs definits
         $hihamarcs = (empty($frames)) ? false : true;
-
+        
         return $this->view->assign('hi_ha_marcs', $hihamarcs)
                 ->assign('marcs', $frames)
                 ->fetch('IWtimeframes_admin_main.htm');
@@ -113,14 +123,19 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
     }
 
     /*
-      funció que gestiona l'esborrament d'un marc horari i envia les dades a la funció API corresponent per fer l'ordre efectiva
+     * Funció que gestiona l'esborrament d'un marc horari i envia les dades a la funció API 
+     * corresponent per fer l'ordre efectiva
      */
 
     public function delete($args) {
-        $mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'REQUEST');
-        $confirmacio = FormUtil::getPassedValue('confirmacio', isset($args['confirmacio']) ? $args['confirmacio'] : null, 'POST');
-        $mode = FormUtil::getPassedValue('m', isset($args['m']) ? $args['m'] : null, 'POST');
-        $referenced = FormUtil::getPassedValue('r', isset($args['r']) ? $args['r'] : null, 'REQUEST');
+        //$mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'REQUEST');
+        $mdid= FormUtil::getPassedValue('mdid', null, 'REQUEST');
+        $confirmacio = FormUtil::getPassedValue('confirmacio', null, 'REQUEST');
+        //$confirmacio = FormUtil::getPassedValue('confirmacio', isset($args['confirmacio']) ? $args['confirmacio'] : null, 'REQUEST');
+        //$mode = FormUtil::getPassedValue('m', isset($args['m']) ? $args['m'] : null, 'POST');
+        //$referenced = FormUtil::getPassedValue('r', isset($args['r']) ? $args['r'] : null, 'REQUEST');
+        $mode = FormUtil::getPassedValue('m', null, 'REQUEST');
+        $referenced = FormUtil::getPassedValue('r', null, 'REQUEST');
 
         // Security check
         if (!SecurityUtil::checkPermission('IWtimeframes::', "::", ACCESS_ADMIN)) {
@@ -139,28 +154,30 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
         if (!SecurityUtil::checkPermission('IWtimeframes::Item', "$registre[nom_marc]::$mdid", ACCESS_ADMIN)) {
             return LogUtil::registerError($this->__('Not authorized to manage timeFrames.'));
         }
+        
         //Demanem confirmació per l'esborrament del registre, si no s'ha demanat abans
         if (empty($confirmacio) and empty($referenced)) {
             return $this->view->assign('mdid', $mdid)
                     ->assign('nom_marc', $registre['nom_marc'])
                     ->fetch('IWtimeframes_admin_del.htm');
         }
-
+       
         //L'usuari ha confirmat l'esborrament del registre i procedim a fer-ho efectiu
         // Check if frame is referenced in bookings module
         if (empty($referenced)) {
             $referenced = ModUtil::apiFunc('IWtimeframes', 'admin', 'referenced',
                             array('mdid' => $mdid));
+
             if ($referenced) {
-                $this->view->assign('referenced', $referenced)
+                return $this->view->assign('referenced', $referenced)
                         ->assign('mdid', $mdid)
                         ->assign('nom_marc', $registre['nom_marc'])
                         ->fetch('IWtimeframes_admin_del.htm');
             }
         }
-
+        
         // Confirm authorisation code
-        $this->checkCsrfToken();
+        //$this->checkCsrfToken();
 
         //Cridem la funció API que farï¿œ l'esborrament del registre
         if (ModUtil::apiFunc('IWtimeframes', 'admin', 'delete',
@@ -175,8 +192,8 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
     }
 
     /* ---------------------------------------------------------------------------------------------------------*\
-     * 												HORES 														*
-      \* --------------------------------------------------------------------------------------------------------- */
+     * 					     HORES 														*
+    \* ---------------------------------------------------------------------------------------------------------*/
 
     /*
       Funció que mostra la informació d'un marc horari
@@ -200,7 +217,7 @@ class IWtimeframes_Controller_Admin extends Zikula_AbstractController {
         !empty($horari) ? $hi_ha_hores = true : $hi_ha_hores = false;
         $hasbookings = ModUtil::apiFunc('IWtimeframes', 'admin', 'hasbookings',
                         array('mdid' => $mdid));
-
+ 
         return $this->view->assign('nom_marc', $item['nom_marc'])
                 ->assign('horari', $horari)
                 ->assign('hi_ha_hores', $hi_ha_hores)

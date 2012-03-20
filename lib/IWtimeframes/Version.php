@@ -5,7 +5,7 @@
  * Load the module version information
  *
  * @author		Albert Pérez Monfort (aperezm@xtec.cat)
- * @author		Josep Ferràndiz FarrÃ© (jferran6@xtec.cat)
+ * @author		Josep Ferràndiz Farré (jferran6@xtec.cat)
  * @return		The version information
  */
 class IWtimeframes_Version extends Zikula_AbstractVersion

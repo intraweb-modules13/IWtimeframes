@@ -80,8 +80,10 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
     }
 
     public function delete($args) {
-        $mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'POST');
-        $mode = FormUtil::getPassedValue('m', isset($args['m']) ? $args['m'] : null, 'POST');
+        //$mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'POST');
+        //$mode = FormUtil::getPassedValue('m', isset($args['m']) ? $args['m'] : null, 'POST');
+        $mdid = $args['mdid'];
+        $mode = $args['m'];
 
         //Comprovem que el parï¿œmetre id hagi arribat
         if (!isset($mdid)) {
@@ -107,34 +109,63 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
         }
 
         switch ($mode) {
-            case 'all': //timetable not referenced in IWbookings
+            case 'all': //erase timetable and all the bookings referenced in IWbookings
                 // falta esborrar totes les reserves
-                $where = "mdid = " . $mdid;
-                $rs = array();
-                $rs = DBUtil::selectObjectArray('IWbookings_spaces', $where);
-                foreach ($rs as $item) {
-                    DBUtil::deleteWhere('IWbookings', "sid=" . $item['sid']);
+                if (ModUtil::apifunc('IWtimeframes', 'admin', 'installed', 'IWbookings')){
+                    $where = "mdid = " . $mdid; 
+                    $rs = array();
+                    $rs = DBUtil::selectObjectArray('IWbookings_spaces', $where);
+                    foreach ($rs as $item) {
+                        DBUtil::deleteWhere('IWbookings', "sid=" . $item['sid']);
+                    }
                 }
-            case 'keep': //keep bookings
-                $obj = array('mdid' => 0);
-                $where = "mdid = " . $mdid;
-                DBUtil::updateObject($obj, 'IWbookings_spaces', $where);
-            case 'noref': //delete all: timetable & bookings
-                DBUtil::deleteWhere('IWtimeframes_definition', "mdid=" . $mdid);
-                DBUtil::deleteWhere('IWtimeframes', "mdid=" . $mdid);
-        }
+            case 'keep': //keep bookings and reset timeframe
+                if (ModUtil::apifunc('IWtimeframes', 'admin', 'installed', 'IWbookings')){
+                    // Posem a 0 la referència al marc horari esborrat dels espais afectats
+                    ModUtil::apiFunc('IWbookings', 'admin', 'reset_timeframe', $mdid);
+                }
 
+            //case 'noref': //delete: timetable
+            //    DBUtil::deleteWhere('IWtimeframes_definition', "mdid=" . $mdid);
+            //    DBUtil::deleteWhere('IWtimeframes', "mdid=" . $mdid);
+        }
+        // Esborrem el mac horari
+        DBUtil::deleteWhere('IWtimeframes_definition', "mdid=" . $mdid);
+        DBUtil::deleteWhere('IWtimeframes', "mdid=" . $mdid);
         //Retornem true ja que el procï¿œs ha finalitzat amb ï¿œxit
         return true;
     }
 
+    // Check if a module is installed
+    public function installed($module_name){
+        $result = false;
+
+        // Checks if module $module_name is installed.         
+        $modid = ModUtil::getIdFromName($module_name);
+        $modinfo = ModUtil::getInfo($modid);
+        if ($modinfo['state'] == 3) {
+            $result = true;
+        }
+        return $result;
+    }
+
+    // Comprova si el marc horari està sent utilitzat per algun espai de reserves
     public function referenced($args) {
         // Security check
         if (!SecurityUtil::checkPermission('IWtimeframes::', "::", ACCESS_ADMIN)) {
             return LogUtil::registerError($this->__('Not authorized to manage timeFrames.'), 403);
         }
-
-        $modid = ModUtil::getIdFromName('IWbookings');
+        if (ModUtil::apifunc('IWtimeframes', 'admin', 'installed', 'IWbookings')) {
+            $mdid = FormUtil::getPassedValue('mdid', isset($args['mdid']) ? $args['mdid'] : null, 'POST');
+            $tablename = 'IWbookings_spaces';
+            $where = 'mdid = ' . $mdid;
+            return (DBUtil::selectObjectCount($tablename, $where) > 0);
+            //$n = DBUtil::selectObjectCount($tablename, $where);
+        } else {
+            return false;
+            //$n = 0;
+        }
+        /* $modid = ModUtil::getIdFromName('IWbookings');
         $modinfo = ModUtil::getInfo($modid);
 
         if ($modinfo['state'] > 1) {
@@ -145,6 +176,8 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
         } else {
             return false;
         }
+         * 
+         */
     }
 
     public function hasbookings($args) {
@@ -174,7 +207,7 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
                     . " WHERE $t2.$c2[mdid]= " . $mdid;
             //$where = ""
             $result = DBUtil::executeSQL($sql);
-            for ($nitems = -1; !$result->EOF; $result->MoveNext()) $nitems ++;            
+            for ($nitems = -1; !$result->EOF; $result->MoveNext()) $nitems ++;             
             return ($nitems);
         } else {
             return false;
@@ -199,7 +232,7 @@ class IWtimeframes_Api_Admin extends Zikula_AbstractApi {
         $where = "mdid =" . $mdid;
         $orderby = 'hid';
         $items = DBUtil::selectObjectArray($tablename, $where, $orderby);
-//print_r($items); die();
+
         foreach ($items as $item) {
             if ($item['hid'] <> $hid) {
                 $itemStart = date('H:i:s', strtotime($item['start']));

@@ -12,7 +12,7 @@
         <div class="z-center">
             <span class="z-buttons">
                 <a href="javascript:document.forms['delete'].submit();">
-                    {img modname='core' src='button_ok.png' set='icons/small' __alt="Confirm the deletion of the timeFrame" __title="Confirm the deletion of the timeFrame"} {gt text="Confirm"}
+                    {img modname='core' src='button_ok.png' set='icons/small' __alt="Confirm the deletion of the timeframe" __title="Confirm the deletion of the timeframe"} {gt text="Confirm"}
                 </a>
             </span>
             <span class="z-buttons">
@@ -28,15 +28,25 @@
         <input type="hidden" name="m" value="all" />
         <input type="hidden" name="r" value="{$referenced}" />
         <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
+        <div class="z-errormsg">
         {gt text="Note: there are areas of reserves that refer to this timeFrame."}
+        </div>
         <div class="z-center">
-            {button src='button_ok.gif' set='icons/small'   __alt="Clear framework and associated reserves" __title="Clear framework and associated reserves"}{gt text="Delete all"}
+            <span class="z-buttons">
+                <a href="{modurl modname='IWtimeframes' type='admin' func='delete' mdid=$mdid m='all' r=$referenced};">
+                {img modname='core' src='button_ok.png' set='icons/small'  __alt="Erase frame and associated bookings" __title="Erase frame and associated bookings"}{gt text="Delete all: time frame and all bookings"}
+                </a>
+            </span>
+            <span class="z-buttons">
             <a href="{modurl modname='IWtimeframes' type='admin' func='delete' mdid=$mdid m='keep' r=$referenced}">
-                {img modname='core' src='reload_page.png' set='icons/small'   __alt="Conserve the reserves" __title="Conserve the reserves"} {gt text="Conserve reserves"}
+                {img modname='core' src='cal.png' set='icons/small'   __alt="Conserve the reserves" __title="Conserve the reserves"} {gt text="Conserve reserves"}
             </a>
+            </span>
+            <span class="z-buttons">
             <a href="{modurl modname='IWtimeframes' type='admin' func='main'}">
                 {img modname='core' src='button_cancel.png' set='icons/small' __alt="Suspended the file" __title="Suspended the file"} {gt text="Cancel"}
             </a>
+            </span>
         </div>
     </form>
     {/if}
