@@ -87,8 +87,8 @@
         {/if}
         {if isset($hi_ha_hores)&& $hi_ha_hores}        
         <table width ="100%">
-            <tr><td width="20%"></td>
-            <td width="60%">            
+            <tr>
+                <td>            
                     <table class="z-datatable">
                         <thead>
                             <tr>
@@ -102,43 +102,44 @@
                             {foreach item="hores" from=$horari}
                             <tr class="{cycle values="z-odd,z-even"}">
                                 <td align="center">
-                                    {$hores.hora}
-                                </td>
-                                <td align="center" >
-                                    {if $hores.descriu}
-                                    {$hores.descriu}
-                                    {else}
-                                    ---
-                                    {/if}
-                                </td>
-                                <td align="center">
-                                    {if !isset($hasbookings) || !$hasbookings}
-                                    <a href="{modurl modname='IWtimeframes' type='admin' func='edit_hour' hid=$hores.hid mdid = $mdid}">
-                                        {img modname='core' src='edit.png' set='icons/extrasmall'   __alt="Edit" __title="Edit"}
-                                    </a>
-                                    <a href="{modurl modname='IWtimeframes' type='admin' func='delete_hour' hid=$hores.hid mdid = $mdid}">
-                                        {img modname='core' src='14_layer_deletelayer.png' set='icons/extrasmall' __alt="Delete" __title="Delete"}
-                                    </a>
-                                    {else}
-                                    {gt text="Have bookings"}
-                                    {/if}
-                                </td>
-                            </tr>
-                            {/foreach}
+                                     {$hores.hora}
+                                 </td>
+                                 <td align="center" >
+                                     {if $hores.descriu}
+                                     {$hores.descriu}
+                                     {else}
+                                     ---
+                                     {/if}
+                                 </td>
+                                 <td align="center">
+                                     {if !isset($hasbookings) || !$hasbookings}
+                                     <a href="{modurl modname='IWtimeframes' type='admin' func='edit_hour' hid=$hores.hid mdid = $mdid}">
+                                         {img modname='core' src='edit.png' set='icons/extrasmall'   __alt="Edit" __title="Edit"}
+                                     </a>
+                                     <a href="{modurl modname='IWtimeframes' type='admin' func='delete_hour' hid=$hores.hid mdid = $mdid}">
+                                         {img modname='core' src='14_layer_deletelayer.png' set='icons/extrasmall' __alt="Delete" __title="Delete"}
+                                     </a>
+                                     {else}
+                                     {gt text="Have bookings"}
+                                     {/if}
+                                 </td>
+                             </tr>
+                             {/foreach}
 
-                        </tbody>
-                    </table>
-                </td><td width="20%"></td></tr>
-        </table>
-        {if $hasbookings}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            {if $hasbookings}
             <div class="z-warningmsg">
-            {gt text='There are at least a space in IWbookings module that uses this time frame. That space has bookings. No changes will be allowed before deleting those bookings.'}
-            <!--//Hi ha, com a mínim, un espai en el mòdul IWbookings que utilitza aquest marc de temps. En aquest espai ja s'han fet reserves. No es permetran canvis abans d'eliminar aquestes reserves.-->
+                {gt text='There are at least a space in IWbookings module that uses this time frame. That space has bookings. No changes will be allowed before deleting those bookings.'}
+                <!--//Hi ha, com a mínim, un espai en el mòdul IWbookings que utilitza aquest marc de temps. En aquest espai ja s'han fet reserves. No es permetran canvis abans d'eliminar aquestes reserves.-->
             </div>
-        {/if}
-        {else}
-        <div class="z-informationmsg">
-        {gt text="This timeFrame does not have any set hours"}
-        </div>
-        {/if}
-</div>
+            {/if}
+            {else}
+            <div class="z-informationmsg">
+                {gt text="This timeFrame does not have any set hours"}
+            </div>
+            {/if}
+    </div>
