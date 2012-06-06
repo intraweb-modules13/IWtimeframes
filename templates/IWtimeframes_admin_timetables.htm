@@ -131,7 +131,7 @@
                     </td>
                 </tr>
             </table>
-            {if $hasbookings}
+            {if isset($hasbookings) AND $hasbookings}
             <div class="z-warningmsg">
                 {gt text='There are at least a space in IWbookings module that uses this time frame. That space has bookings. No changes will be allowed before deleting those bookings.'}
                 <!--//Hi ha, com a mínim, un espai en el mòdul IWbookings que utilitza aquest marc de temps. En aquest espai ja s'han fet reserves. No es permetran canvis abans d'eliminar aquestes reserves.-->
